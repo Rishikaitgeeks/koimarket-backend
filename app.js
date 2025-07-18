@@ -35,8 +35,8 @@ mongoose.connect(process.env.MONGODB_URI)
           app.use("/api",PageRouter);
           app.use("/update",UpdateRouter);
           app.use('/api', CSVRouter);
-     app.use('/exports', express.static(path.join(__dirname, 'public/exports')));
-app.use("/", ExportRouter);
+        app.use('/exports', express.static(path.join(__dirname, 'public/exports')));
+        app.use("/", ExportRouter);
 
 
 
