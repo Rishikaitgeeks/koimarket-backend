@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const inventorySchema = new mongoose.Schema({
   inventory_item_id: {
     type: String,

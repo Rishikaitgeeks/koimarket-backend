@@ -3,7 +3,7 @@ const Order = require("../model/order.model");
 
 const getOrder = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;  // default: page 1
+    const page = parseInt(req.query.page) || 1;
     const limit = 50;  // fixed limit per page
 
     const skip = (page - 1) * limit;
