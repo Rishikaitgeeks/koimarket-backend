@@ -24,7 +24,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
-
+    console.log('mongo connected');
+    console.log(process.env.MONGODB_URI);
     app.use("/", LoginRouter);
     app.use("/webhook", WebhookRouter);
     app.use("/api", SyncRouter);
