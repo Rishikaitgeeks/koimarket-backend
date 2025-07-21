@@ -1,6 +1,5 @@
-
 const Order = require("../model/order.model");
-const {sendThresholdEmails} = require("./nodemailer");
+const { sendThresholdEmails } = require("./nodemailer");
 
 const Webhook3 = async (req, res) => {
   try {
@@ -21,23 +20,22 @@ const Webhook3 = async (req, res) => {
       if (!sku || !quantity || !variant_title || !orderId) continue;
 
       const newOrder = new Order({
-             sku,
-             quantity,
-             variant_title,
-             order_id: order.name,
-             store_name: storeName,
-           });
-     
-           const saved = await newOrder.save();
+        sku,
+        quantity,
+        variant_title,
+        order_id: order.name,
+        store_name: storeName,
+      });
+
+      const saved = await newOrder.save();
 
       inserted.push(saved);
     }
 
-        await sendThresholdEmails();
+    await sendThresholdEmails();
 
-    return res.status(200).json({ message: "✅ Order synced", inserted });
+    return res.status(200).json({ message: "Order synced", inserted });
   } catch (err) {
-    console.error("❌ Webhook error:", err.message);
     return res.status(500).json({ error: "Failed to handle webhook" });
   }
 };

@@ -6,7 +6,6 @@ async function sendThresholdEmails() {
   const belowThreshold = await Sync.find({ $expr: { $lt: ["$quantity", "$threshold"] } });
 
   if (!belowThreshold.length) {
-    console.log("✅ No products below threshold.");
     return;
   }
 
@@ -40,10 +39,8 @@ async function sendThresholdEmails() {
   
 transporter.sendMail(mailOptions, (error, info) => {
   if (error) {
-    console.error("❌ Email error:", error);
     reject(false);
   } else {
-    console.log("✅ Email sent:", info.response);
     resolve(true);
   }
 });

@@ -63,7 +63,6 @@ const updateBulkInventory = async (req, res) => {
       results.push({ sku, success: true });
 
     } catch (err) {
-      console.error(`Error updating ${sku}:`, err.message);
       results.push({ sku, success: false, error: err.message });
     }
   }

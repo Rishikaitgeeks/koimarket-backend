@@ -1,6 +1,4 @@
-
 const { graphqlRequest } = require("./Shopify");
-
 const fetchShopifyVariants = async () => {
   const variants = [];
   let hasNextPage = true;
@@ -8,7 +6,7 @@ const fetchShopifyVariants = async () => {
 
   try {
     while (hasNextPage) {
-    const query = `
+      const query = `
   {
     products(first: 100${endCursor ? `, after: "${endCursor}"` : ""}) {
       pageInfo { hasNextPage }
@@ -49,14 +47,8 @@ const fetchShopifyVariants = async () => {
   }
 `;
 
-      console.log("🔄 Sending GraphQL query to Shopify...");
- const result = await graphqlRequest({ query });
-
-      console.log("✅ Received Shopify response.");
-
-      // ✅ Defensive check
+      const result = await graphqlRequest({ query });
       if (!result?.data?.products?.edges) {
-        console.error("❌ No products found in result:", JSON.stringify(result, null, 2));
         break;
       }
 
@@ -66,7 +58,7 @@ const fetchShopifyVariants = async () => {
         const product = productEdge.node;
         for (const variantEdge of product.variants.edges) {
           const variant = variantEdge.node;
-        
+
           const qty = variant.inventoryQuantity || 0;
 
           variants.push({
@@ -75,7 +67,7 @@ const fetchShopifyVariants = async () => {
             quantity: qty,
             product_id: product.id,
             product_title: product.title,
-          product_image: product.images?.edges?.[0]?.node?.url,
+            product_image: product.images?.edges?.[0]?.node?.url,
             variant_title: variant.title,
             variant_price: variant.price,
             variant_image: variant.image?.originalSrc,
@@ -84,13 +76,13 @@ const fetchShopifyVariants = async () => {
       }
 
       hasNextPage = result.data.products.pageInfo.hasNextPage;
-      endCursor = productEdges.length > 0 ? productEdges[productEdges.length - 1].cursor : null;
+      endCursor =
+        productEdges.length > 0
+          ? productEdges[productEdges.length - 1].cursor
+          : null;
     }
-
-    console.log(`🎯 Total variants fetched: ${variants.length}`);
     return variants;
   } catch (err) {
-    console.error("❌ Shopify GraphQL fetch failed:", err?.message || err);
     return [];
   }
 };

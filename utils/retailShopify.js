@@ -1,11 +1,8 @@
 require("dotenv").config();
 const fetch = require("cross-fetch");
-
 const GRAPHQL_ENDPOINT = `https://${process.env.SHOPIFY_STORES}.myshopify.com/admin/api/2024-04/graphql.json`;
-
 const graphqlRequest = async (payload) => {
   if (!payload || !payload.query) {
-    console.error("❌ GraphQL payload is missing 'query' field.");
     return { errors: { query: "Required parameter missing or invalid" } };
   }
 
@@ -21,36 +18,14 @@ const graphqlRequest = async (payload) => {
   const result = await res.json();
 
   if (result.errors) {
-    console.error("❌ Shopify GraphQL API returned errors:", result.errors);
+    console.error("Shopify GraphQL API returned errors:", result.errors);
   }
 
   if (!result.data) {
-    console.error("❌ No 'data' field in Shopify GraphQL response:", result);
+    console.error("No 'data' field in Shopify GraphQL response:", result);
   }
 
   return result;
 };
 
 module.exports = { graphqlRequest };
-
-// require("dotenv").config();
-// const Shopify = require("shopify-api-node");
-
-// const shopify = new Shopify({
-//   shopName: process.env.SHOPIFY_STORES,
-//   accessToken: process.env.SHOPIFY_ACCESS_TOKEN_STORE,
-// });
-
-// const graphqlRequest = async ({ query, variables = {} }) => {
-//   try {
-//     const response = await shopify.graphql(query, variables);
-//     return { data: JSON.parse(response) };
-//   } catch (error) {
-//     console.error("❌ GraphQL Error:", error?.response?.errors || error.message);
-//     return { error };
-//   }
-// };
-
-// module.exports = {
-//   graphqlRequest,
-// };

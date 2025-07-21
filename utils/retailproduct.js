@@ -1,5 +1,4 @@
 const { graphqlRequest } = require("./retailShopify");
-
 const fetchRetailVariants = async () => {
   const variants = [];
   let hasNextPage = true;
@@ -7,7 +6,7 @@ const fetchRetailVariants = async () => {
 
   try {
     while (hasNextPage) {
-    const query = `
+      const query = `
   {
     products(first: 100${endCursor ? `, after: "${endCursor}"` : ""}) {
       pageInfo { hasNextPage }
@@ -48,13 +47,8 @@ const fetchRetailVariants = async () => {
   }
 `;
 
-      console.log("🔄 Sending GraphQL query to Shopify...");
       const result = await graphqlRequest({ query });
-      console.log("✅ Received Shopify response.");
-
-      // ✅ Defensive check
       if (!result?.data?.products?.edges) {
-        console.error("❌ No products found in result:", JSON.stringify(result, null, 2));
         break;
       }
 
@@ -64,7 +58,7 @@ const fetchRetailVariants = async () => {
         const product = productEdge.node;
         for (const variantEdge of product.variants.edges) {
           const variant = variantEdge.node;
-        
+
           const qty = variant.inventoryQuantity || 0;
 
           variants.push({
@@ -73,106 +67,24 @@ const fetchRetailVariants = async () => {
             quantity: qty,
             product_id: product.id,
             product_title: product.title,
-          product_image: product.images?.edges?.[0]?.node?.url,
+            product_image: product.images?.edges?.[0]?.node?.url,
             variant_title: variant.title,
             variant_price: variant.price,
-            variant_image: variant.image?.originalSrc
+            variant_image: variant.image?.originalSrc,
           });
         }
       }
 
       hasNextPage = result.data.products.pageInfo.hasNextPage;
-      endCursor = productEdges.length > 0 ? productEdges[productEdges.length - 1].cursor : null;
+      endCursor =
+        productEdges.length > 0
+          ? productEdges[productEdges.length - 1].cursor
+          : null;
     }
-
-    console.log(`🎯 Total variants fetched: ${variants.length}`);
     return variants;
   } catch (err) {
-    console.error("❌ Shopify GraphQL fetch failed:", err?.message || err);
     return [];
   }
 };
 
 module.exports = { fetchRetailVariants };
-
-// const { graphqlRequest } = require("./retailShopify");
-
-// const fetchRetailVariants = async () => {
-//   const variants = [];
-//   let hasNextPage = true;
-//   let endCursor = null;
-
-//   try {
-//     while (hasNextPage) {
-//       const query = `
-//         query {
-//           products(first: 100${endCursor ? `, after: "${endCursor}"` : ""}) {
-//             pageInfo {
-//               hasNextPage
-//             }
-//             edges {
-//               cursor
-//               node {
-//                 id
-//                 title
-//                 variants(first: 100) {
-//                   edges {
-//                     node {
-//                       id
-//                       title
-//                       sku
-//                       inventoryQuantity
-//                       inventoryItem {
-//                         id
-//                       }
-//                     }
-//                   }
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       `;
-
-//       console.log("🔄 Sending GraphQL query to Shopify...");
-//       const result = await graphqlRequest({ query });
-//       console.log("✅ Received Shopify response.");
-
-//       // 🛡️ Defensive null check
-//       const productEdges = result?.data?.products?.edges;
-//       if (!Array.isArray(productEdges)) {
-//         console.error("❌ No valid product edges found:", JSON.stringify(result, null, 2));
-//         break;
-//       }
-
-//       for (const productEdge of productEdges) {
-//         const product = productEdge.node;
-//         const variantEdges = product?.variants?.edges || [];
-
-//         for (const variantEdge of variantEdges) {
-//           const variant = variantEdge.node;
-
-//           variants.push({
-//             sku: variant?.sku || null,
-//             inventory_item_id: variant?.inventoryItem?.id || null,
-//             quantity: variant?.inventoryQuantity ?? 0,
-//             product_id: product.id,
-//             product_title: product.title,
-//             variant_title: variant.title,
-//           });
-//         }
-//       }
-
-//       hasNextPage = result?.data?.products?.pageInfo?.hasNextPage || false;
-//       endCursor = productEdges.length > 0 ? productEdges[productEdges.length - 1].cursor : null;
-//     }
-
-//     console.log(`🎯 Total variants fetched: ${variants.length}`);
-//     return variants;
-//   } catch (err) {
-//     console.error("❌ Shopify GraphQL fetch failed:", err?.message || err);
-//     return [];
-//   }
-// };
-
-// module.exports = { fetchRetailVariants };

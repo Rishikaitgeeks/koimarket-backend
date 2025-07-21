@@ -18,8 +18,7 @@ const Webhook4 = async (req, res) => {
       const variant_title = item.title;
 
       if (!sku || !quantity || !variant_title || !orderId) continue;
-
-         const newOrder = new Order({
+        const newOrder = new Order({
         sku,
         quantity,
         variant_title,
@@ -33,9 +32,8 @@ const Webhook4 = async (req, res) => {
 
         await sendThresholdEmails();
 
-    return res.status(200).json({ message: "✅ Order synced", inserted });
+    return res.status(200).json({ message: "Order synced", inserted });
   } catch (err) {
-    console.error("❌ Webhook error:", err.message);
     return res.status(500).json({ error: "Failed to handle webhook" });
   }
 };

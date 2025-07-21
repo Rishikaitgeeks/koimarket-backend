@@ -8,20 +8,20 @@ const Webhook2 = async (req, res) => {
   try {
     const order = req.body;
     const storeName = req.headers["x-shopify-shop-domain"] || null;
-      const orderId = order.name;
+    const orderId = order.name;
 
     const isRefund = order.refunds && order.refunds.length > 0;
 
     const items = isRefund
-      ? order.refunds.flatMap(refund =>
-          refund.refund_line_items.map(refundItem => ({
+      ? order.refunds.flatMap((refund) =>
+          refund.refund_line_items.map((refundItem) => ({
             sku: refundItem.line_item?.sku?.trim(),
-            quantity: refundItem.quantity
+            quantity: refundItem.quantity,
           }))
         )
-      : order.line_items.map(item => ({
+      : order.line_items.map((item) => ({
           sku: item.sku?.trim(),
-          quantity: item.quantity
+          quantity: item.quantity,
         }));
 
     for (const { sku, quantity } of items) {
@@ -29,7 +29,6 @@ const Webhook2 = async (req, res) => {
 
       const wholesaleProduct = await Wholesale.findOne({ sku });
       if (!wholesaleProduct) {
-        console.warn(`❌ SKU ${sku} not found in Wholesale`);
         continue;
       }
 
@@ -37,13 +36,10 @@ const Webhook2 = async (req, res) => {
       const currentQty = wholesaleProduct.quantity || 0;
 
       if (!inventoryId) {
-        console.warn(`⚠️ Inventory ID missing for SKU ${sku}`);
         continue;
       }
 
-      const newQty = isRefund
-        ? currentQty + quantity
-        : currentQty - quantity;
+      const newQty = isRefund ? currentQty + quantity : currentQty - quantity;
 
       await Retail.findOneAndUpdate(
         { sku },
@@ -51,21 +47,17 @@ const Webhook2 = async (req, res) => {
       );
 
       await Wholesale.updateOne({ sku }, { quantity: newQty });
-       await Sync.updateOne({ sku }, { quantity: newQty });
-
+      await Sync.updateOne({ sku }, { quantity: newQty });
 
       await setShopifyInventory(inventoryId, newQty);
-
-      console.log(`✅ SKU ${sku} ${isRefund ? 'restocked (refund)' : 'sold'}. New Qty: ${newQty}`);
     }
 
-      await Order.deleteMany({ order_id: orderId, store_name: storeName });
+    await Order.deleteMany({ order_id: orderId, store_name: storeName });
 
     return res.status(200).json({
-      message: `✅ Inventory ${isRefund ? 'restocked (refund)' : 'synced (sale)'}`,
+      message: `Inventory ${isRefund ? "restocked (refund)" : "synced (sale)"}`,
     });
   } catch (err) {
-    console.error("❌ Webhook error:", err.message);
     return res.status(500).json({ error: "Webhook processing failed" });
   }
 };
