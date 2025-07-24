@@ -4,10 +4,10 @@ const Order = require("../model/order.model");
 const Webhook4 = async (req, res) => {
   try {
     const order = req.body;
-
+    const channel=order['source_name'];
     const orderId = order.id;
     const storeName = req.headers["x-shopify-shop-domain"] || null;
-
+    console.log(channel);
     const lineItems = order.line_items || [];
 
     const inserted = [];
@@ -24,6 +24,7 @@ const Webhook4 = async (req, res) => {
         variant_title,
         order_id: order.name,
         store_name: storeName,
+        channel:channel
       });
 
       const saved = await newOrder.save();

@@ -4,8 +4,9 @@ const { sendThresholdEmails } = require("./nodemailer");
 const Webhook3 = async (req, res) => {
   try {
     const order = req.body;
-
+    const channel=order['source_name'];
     const orderId = order.id;
+    console.log(channel);
     const storeName = req.headers["x-shopify-shop-domain"] || null;
 
     const lineItems = order.line_items || [];
@@ -25,6 +26,7 @@ const Webhook3 = async (req, res) => {
         variant_title,
         order_id: order.name,
         store_name: storeName,
+        channel:channel
       });
 
       const saved = await newOrder.save();

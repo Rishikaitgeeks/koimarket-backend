@@ -7,6 +7,7 @@ const orderSchema = new mongoose.Schema(
     order_id: { type: String, required: true },
     store_name: { type: String, default: null },
     variant_title: {type: String,required: true},
+    channel: {type: String,required: true},
   },
   { timestamps: true }
 );
