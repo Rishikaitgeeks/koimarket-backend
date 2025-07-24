@@ -151,12 +151,13 @@ const syncRetail = async () => {
 const syncFromWholesaleToSync = async () => {
   const [retailData, wholesaleData] = await Promise.all([
     Retail.find(),
-    Wholesale.find(),
+    Wholesale.find()
   ]);
-  const failed = [];
 
+  const failed = [];
   const skuMap = new Map();
 
+  // Add retail products
   for (const item of retailData) {
     skuMap.set(item.sku, {
       sku: item.sku,
@@ -164,21 +165,25 @@ const syncFromWholesaleToSync = async () => {
       product_title: item.product_title,
       product_image: item.product_image,
       variant_title: item.variant_title,
-      variant_price: item.variant_price,
       variant_image: item.variant_image,
+      retail_price: item.variant_price  
     });
   }
 
+  // Merge wholesale info
   for (const item of wholesaleData) {
-    if (!skuMap.has(item.sku)) {
+    if (skuMap.has(item.sku)) {
+      const existing = skuMap.get(item.sku);
+      existing.wholesale_price = item.variant_price;
+    } else {
       skuMap.set(item.sku, {
         sku: item.sku,
         quantity: item.quantity,
         product_title: item.product_title,
         product_image: item.product_image,
         variant_title: item.variant_title,
-        variant_price: item.variant_price,
         variant_image: item.variant_image,
+        wholesale_price: item.variant_price  
       });
     }
   }
@@ -186,27 +191,26 @@ const syncFromWholesaleToSync = async () => {
   const mergedData = Array.from(skuMap.values());
 
   const processBatch = async (batch) => {
-    const results = await Promise.all(
-      batch.map(async (item) => {
-        try {
-          return await Sync.findOneAndUpdate({ sku: item.sku }, item, {
-            upsert: true,
-            new: true,
-            setDefaultsOnInsert: true,
-          });
-        } catch (err) {
-          failed.push({ sku: item.sku, error: err.message });
-          return null;
-        }
-      })
-    );
-
+    const results = await Promise.all(batch.map(async (item) => {
+      try {
+        return await Sync.findOneAndUpdate(
+          { sku: item.sku },
+          item,
+          { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+      } catch (err) {
+        failed.push({ sku: item.sku, error: err.message });
+        return null;
+      }
+    }));
     return results.filter(Boolean);
   };
 
   const batches = await batchProcess(mergedData, 1000, processBatch, 0);
   return { batches, failed };
 };
+
+
 
 // MAIN SYNC CONTROLLER
 const runFullSync = async (req, res) => {
@@ -218,10 +222,10 @@ const runFullSync = async (req, res) => {
     await sendThresholdEmails();
 
     return res.status(200).json({
-      message: "Full sync completed successfully",
+      message: " Full sync completed successfully",
       wholesale: {
         totalBatches: wholesaleResult.batches.length,
-        batches: wholesaleResult.batches.map((b) => ({
+        batches: wholesaleResult.batches.map(b => ({
           batchNumber: b.batchNumber,
           processedCount: b.processedCount,
         })),
@@ -229,32 +233,37 @@ const runFullSync = async (req, res) => {
       },
       retail: {
         totalBatches: retailResult.batches.length,
-        batches: retailResult.batches.map((b) => ({
+        batches: retailResult.batches.map(b => ({
           batchNumber: b.batchNumber,
           processedCount: b.processedCount,
         })),
         skippedCount: retailResult.skipped.length,
       },
-      sync: {
-        totalBatches: syncResult.batches.length,
-        batches: syncResult.batches.map((b) => ({
-          batchNumber: b.batchNumber,
-          processedCount: b.processedCount,
-          uploaded: b.data.map((p) => ({
-            sku: p.sku,
-            product_title: p.product_title,
-            variant_title: p.variant_title,
-            quantity: p.quantity,
-          })),
-        })),
-        failedCount: syncResult.failed.length,
-        failed: syncResult.failed,
-      },
+   sync: {
+  totalBatches: syncResult.batches.length,
+  batches: syncResult.batches.map(b => ({
+    batchNumber: b.batchNumber,
+    processedCount: b.processedCount,
+    uploaded: b.data.map(p => ({
+      sku: p.sku,
+      product_title: p.product_title,
+      variant_title: p.variant_title,
+      quantity: p.quantity,
+        retail_price: p.retail_price,         
+  wholesale_price: p.wholesale_price
+    }))
+  })),
+  failedCount: syncResult.failed.length,
+  failed: syncResult.failed,
+},
+
     });
   } catch (err) {
+    console.error(" Full sync error:", err.message);
     return res.status(500).json({ error: "Full sync failed" });
   }
 };
+
 
 const fetchProducts = async (request, response) => {
     Sync.find()

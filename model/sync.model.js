@@ -6,7 +6,14 @@ const syncSchema = new mongoose.Schema({
   product_title: { type: String, required: true},
    product_image:{ type: String, default: null},
    variant_title: { type: String, required: true},
-  variant_price:{type:String, required:true},
+   retail_price: {
+  type: String,
+  default: null
+},
+wholesale_price: {
+  type: String,
+  default: null
+},
   variant_image:{type: String, default: null}
 }, { timestamps: true });
 
