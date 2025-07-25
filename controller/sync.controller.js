@@ -1,4 +1,5 @@
 const Wholesale = require("../model/wholesale.model");
+const SyncStatus = require("../model/syncstatus.model");
 const Retail = require("../model/retail.model");
 const Sync = require("../model/sync.model");
 const SkippedProduct = require("../model/skipped.model");
@@ -211,16 +212,30 @@ const syncFromWholesaleToSync = async () => {
 };
 
 
+const setSyncInProgress = async () => {
+  let status = await SyncStatus.findOne();
+  if (status) {
+    status.inprogress = true;
+    await status.save();
+  } else {
+    await SyncStatus.create({ inprogress: true });
+  }
+};
+
+const setSyncComplete = async () => {
+  await SyncStatus.updateOne({}, { inprogress: false });
+};
 
 // MAIN SYNC CONTROLLER
 const runFullSync = async (req, res) => {
   try {
+     await setSyncInProgress();
     const wholesaleResult = await syncWholesale();
     const retailResult = await syncRetail();
     const syncResult = await syncFromWholesaleToSync();
 
     await sendThresholdEmails();
-
+     await setSyncComplete();
     return res.status(200).json({
       message: " Full sync completed successfully",
       wholesale: {
