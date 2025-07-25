@@ -23,7 +23,7 @@ const fetchRetailVariants = async () => {
             }
           }
         }
-          variants(first: 100) {
+          variants(first: 50) {
             edges {
               node {
                 id
