@@ -15,7 +15,7 @@ const syncWholesale = async () => {
   const skipped = [];
   const processed = [];
   if(variants.all) {
-    let wholeData= await  Wholesale.find();
+    let wholeData= await Wholesale.find();
     processed.push(...wholeData) ;
     let skippedData= await SkippedProduct.find();
     skipped.push(...skippedData) ;

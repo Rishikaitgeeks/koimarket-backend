@@ -11,12 +11,12 @@ const syncCron = cron.schedule("*/10 * * * * *", async () => {
   if (wholesale_product === true && retail_product === true) {
     console.log('cron');
     await syncStatus.findOneAndUpdate({}, { syncing: false });
-    // if (global.io) {
-    //   global.io.emit('sync-complete', {
-    //     message: '✅ Sync completed successfully',
-    //     timestamp: new Date(),
-    //   });
-    // }
+    if (global.io) {
+      global.io.emit('sync-complete', {
+        message: '✅ Sync completed successfully',
+        timestamp: new Date(),
+      });
+    }
   }
   await runFullSyncFunction();
 });
