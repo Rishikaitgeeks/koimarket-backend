@@ -3,23 +3,23 @@ const syncStatus = require('./model/syncstatus.model');
 
 const { runFullSyncFunction } = require('./controller/sync.controller');
 
-const syncCron = cron.schedule("*/30 * * * * *", async () => {
-  console.log('check', new Date());
-  let syncData = await syncStatus.findOne({}, '');
-  let wholesale_product = syncData?.wholesale_product;
-  let retail_product = syncData?.retail_product;
-  if (wholesale_product === true && retail_product === true) {
-    console.log('cron');
-    await syncStatus.findOneAndUpdate({}, { syncing: false });
-    // if (global.io) {
-    //   global.io.emit('sync-complete', {
-    //     message: '✅ Sync completed successfully',
-    //     timestamp: new Date(),
-    //   });
-    // }
-  }
-  await runFullSyncFunction();
-});
+// const syncCron = cron.schedule("*/30 * * * * *", async () => {
+//   console.log('check', new Date());
+//   let syncData = await syncStatus.findOne({}, '');
+//   let wholesale_product = syncData?.wholesale_product;
+//   let retail_product = syncData?.retail_product;
+//   if (wholesale_product === true && retail_product === true) {
+//     console.log('cron');
+//     await syncStatus.findOneAndUpdate({}, { syncing: false });
+//     // if (global.io) {
+//     //   global.io.emit('sync-complete', {
+//     //     message: '✅ Sync completed successfully',
+//     //     timestamp: new Date(),
+//     //   });
+//     // }
+//   }
+//   await runFullSyncFunction();
+// });
 // cron.schedule("* * * * * *", async () => {
 //   let syncData = await syncStatus.findOne({}, '');
 //   let syncing = syncData?.syncing;
