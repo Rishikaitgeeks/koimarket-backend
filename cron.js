@@ -3,7 +3,7 @@ const syncStatus = require('./model/syncstatus.model');
 
 const { runFullSyncFunction } = require('./controller/sync.controller');
 
-const syncCron = cron.schedule("*/10 * * * * *", async () => {
+const syncCron = cron.schedule("*/30 * * * * *", async () => {
   console.log('check', new Date());
   let syncData = await syncStatus.findOne({}, '');
   let wholesale_product = syncData?.wholesale_product;
