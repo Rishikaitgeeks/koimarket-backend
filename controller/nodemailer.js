@@ -37,13 +37,15 @@ async function sendThresholdEmails() {
     <b>Inventory Monitor</b> `
   };
   
-transporter.sendMail(mailOptions, (error, info) => {
-  if (error) {
-    reject(false);
-  } else {
-    resolve(true);
-  }
-});
+ return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        reject(error); 
+      } else {
+        resolve(true);
+      }
+    });
+  });
 
 }
 
