@@ -15,9 +15,9 @@ const syncWholesale = async () => {
   const skipped = [];
   const processed = [];
   if(variants.all) {
-    let wholeData= Wholesale.find();
+    let wholeData= await  Wholesale.find();
     processed.push(...wholeData) ;
-    let skippedData=SkippedProduct.find();
+    let skippedData= await SkippedProduct.find();
     skipped.push(...skippedData) ;
     return { processed, skipped };
   }
@@ -80,9 +80,9 @@ const syncRetail = async () => {
   const skipped = [];
   const processed = [];
  if(variants.all) {
-    let retailData= Wholesale.find();
+    let retailData= await  Wholesale.find();
     processed.push(...retailData) ;
-    let skipData=SkippedProduct.find();
+    let skipData= await SkippedProduct.find();
     skipped.push(...skipData) ;
     return { processed, skipped };
   }
