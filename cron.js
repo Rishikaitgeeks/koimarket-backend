@@ -20,12 +20,12 @@ const syncCron = cron.schedule("*/30 * * * * *", async () => {
   }
   await runFullSyncFunction();
 });
-cron.schedule("* * * * * *", async () => {
-  let syncData = await syncStatus.findOne({}, '');
-  let syncing = syncData?.syncing;
-  if (syncing) {
-    syncCron.start();
-  } else {
-    syncCron.stop();
-  }
-});
+// cron.schedule("* * * * * *", async () => {
+//   let syncData = await syncStatus.findOne({}, '');
+//   let syncing = syncData?.syncing;
+//   if (syncing) {
+//     syncCron.start();
+//   } else {
+//     syncCron.stop();
+//   }
+// });
