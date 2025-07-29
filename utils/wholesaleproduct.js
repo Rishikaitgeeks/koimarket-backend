@@ -65,7 +65,7 @@ const fetchShopifyVariants = async () => {
       }
 
       const productEdges = result.data.products.edges;
-console.log(productEdges[0].node.id,"wholesale_product")
+console.log(productEdges[0]?.node.id,"wholesale_product");
       for (const productEdge of productEdges) {
         const product = productEdge.node;
         for (const variantEdge of product.variants.edges) {
