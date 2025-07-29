@@ -11,7 +11,7 @@ const PageRouter = require("./routes/pagination.route");
 const UpdateRouter = require("./routes/inventory.route");
 const CSVRouter = require("./routes/csv.route");
 const ExportRouter = require("./routes/export.route");
-
+require('./cron');
 const dotenv = require("dotenv");
 dotenv.config();
 
