@@ -23,7 +23,6 @@ const syncCron = cron.schedule("*/10 * * * * *", async () => {
 cron.schedule("* * * * * *", async () => {
   let syncData = await syncStatus.findOne({}, '');
   let syncing = syncData?.syncing;
-  console.log('tes',syncing);
   if (syncing) {
     syncCron.start();
   } else {
