@@ -11,6 +11,7 @@ const fetchRetailVariants = async () => {
       all:true
     }}
   }
+  console.log('retail');
   try {
     const query = `
   {
@@ -65,7 +66,7 @@ const fetchRetailVariants = async () => {
       }
 
       const productEdges = result.data.products.edges;
-console.log(productEdges[0].node.id,"retail_product")
+console.log(productEdges[0],"retail_product");
       for (const productEdge of productEdges) {
         const product = productEdge.node;
         for (const variantEdge of product.variants.edges) {
