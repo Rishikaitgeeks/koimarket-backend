@@ -32,21 +32,15 @@ mongoose.connect(process.env.MONGODB_URI)
         console.log("Connected to MongoDB");
 
         const server = http.createServer(app);
-
-        // Attach socket.io to HTTP server
         const io = socketIo(server, {
             cors: {
-                origin: '*', // ya specific domain
+                origin: '*', 
                 methods: ['GET', 'POST']
             }
         });
-
-        // Store io globally
         global.io = io;
-
         io.on('connection', (socket) => {
             console.log('✅ Client connected via WebSocket');
-
             socket.on('disconnect', () => {
                 console.log('❌ Client disconnected');
             });
@@ -62,8 +56,8 @@ mongoose.connect(process.env.MONGODB_URI)
         app.use("/", ExportRouter);
 
 
-
-        server.listen(3000, () => {
+        const PORT = process.env.PORT || 8080;
+        server.listen(PORT, () => {
             console.log("Server started on port 3000");
         });
     })
