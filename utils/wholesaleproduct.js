@@ -60,10 +60,9 @@ const fetchShopifyVariants = async () => {
 
       console.log(" Received Shopify response.");
 
-      // if (!result?.data?.products?.edges) {
-      //   console.error(" No products found in result:", JSON.stringify(result, null, 2));
-      //   break;
-      // }
+      if (!result?.data?.products?.edges) {
+        console.error(" No products found in result:", JSON.stringify(result, null, 2));
+      }
 
       const productEdges = result.data.products.edges;
 console.log(productEdges[0].node.id,"wholesale_product")
@@ -95,6 +94,7 @@ console.log(productEdges[0].node.id,"wholesale_product")
 
 
     console.log(` Total variants fetched: ${variants.length}`);
+    variants.all = false;
     return {variants};
   } catch (err) {
     console.error(" Shopify GraphQL fetch failed:", err?.message || err);

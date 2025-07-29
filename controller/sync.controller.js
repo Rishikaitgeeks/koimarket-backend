@@ -202,7 +202,6 @@ let {inprogress} = await syncStatus.findOne({},'')
 }
 await syncStatus.findOneAndUpdate({}, { inprogress: true });
     const wholesaleResult = await syncWholesale();
-    console.log(wholesaleResult);
     const retailResult = await syncRetail();
     const syncResult = await syncFromWholesaleToSync();
 

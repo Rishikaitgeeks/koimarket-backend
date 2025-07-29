@@ -60,10 +60,9 @@ const fetchRetailVariants = async () => {
       const result = await graphqlRequest({ query });
       console.log(" Received Shopify response.");
 
-      // if (!result?.data?.products?.edges) {
-      //   console.error(" No products found in result:", JSON.stringify(result, null, 2));
-      //   break;
-      // }
+      if (!result?.data?.products?.edges) {
+        console.error(" No products found in result:", JSON.stringify(result, null, 2));
+      }
 
       const productEdges = result.data.products.edges;
 console.log(productEdges[0].node.id,"retail_product")
@@ -97,7 +96,8 @@ console.log(productEdges[0].node.id,"retail_product")
     
 
     console.log(`Total variants fetched: ${variants.length}`);
-    return {variants,endCursor};
+    variants.all = false;
+    return {variants};
   } catch (err) {
     console.error(" Shopify GraphQL fetch failed:", err?.message || err);
     return [];
