@@ -267,12 +267,22 @@ const fetchProducts = async (request, response) => {
     });
 }
 
+const fetchStatus = async (request, response) => {
+    syncStatus.find()
+        .then(result => {
+            return response.status(200).json({ status : result });
+        }).catch(err => {
+            return response.status(500).json({ error: "Internal Server Error" });
+        });
+}
+
 
 module.exports = {
   runFullSync,
   syncWholesale,
   fetchProducts,
   syncRetail,
+  fetchStatus,
   runFullSyncFunction,
   syncFromWholesaleToSync,
 };
