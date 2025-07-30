@@ -27,5 +27,9 @@ cron.schedule("*/2 * * * * *", async () => {
     syncCron.start();
   } else {
     syncCron.stop();
+    await syncStatus.findOneAndUpdate({}, {
+      wholesale_product: false,
+      retail_product: false,
+   })
   }
 });
