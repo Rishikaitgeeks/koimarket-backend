@@ -242,9 +242,11 @@ await syncStatus.findOneAndUpdate({}, { inprogress: true });
 
 // MAIN SYNC CONTROLLER
 const runFullSync = async (req, res) => {
-  await syncStatus.findOneAndUpdate({}, {
+    await syncStatus.findOneAndUpdate({}, {
       retail_product:false,
-      wholesale_product:false,
+      wholesale_product:false,}, { upsert: true });
+
+  await syncStatus.findOneAndUpdate({}, {
       retailCursor: null,
       wholesaleCursor: null,
       syncing:true,
