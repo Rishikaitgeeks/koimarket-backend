@@ -30,6 +30,8 @@ cron.schedule("*/2 * * * * *", async () => {
     await syncStatus.findOneAndUpdate({}, {
       wholesale_product: false,
       retail_product: false,
+      retail_cursor:null,
+      wholesale_cursor:null
    })
   }
 });
