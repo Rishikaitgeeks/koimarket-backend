@@ -20,7 +20,7 @@ const syncCron = cron.schedule("*/10 * * * * *", async () => {
   }
   await runFullSyncFunction();
 });
-cron.schedule("* * * * * *", async () => {
+cron.schedule("*/2 * * * * *", async () => {
   let syncData = await syncStatus.findOne({}, '');
   let syncing = syncData?.syncing;
   if (syncing) {
