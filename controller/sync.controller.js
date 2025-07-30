@@ -205,7 +205,7 @@ await syncStatus.findOneAndUpdate({}, { inprogress: true });
     const retailResult = await syncRetail();
     const syncResult = await syncFromWholesaleToSync();
 
-    await sendThresholdEmails();
+    // await sendThresholdEmails();
     await syncStatus.findOneAndUpdate({}, { inprogress: false });
     return ({
       success:true,
