@@ -10,7 +10,7 @@ const syncCron = cron.schedule("*/10 * * * * *", async () => {
   let retail_product = syncData?.retail_product;
   if (wholesale_product === true && retail_product === true) {
     console.log('cron');
-    await syncStatus.findOneAndUpdate({}, { syncing: false });
+    await syncStatus.findOneAndUpdate({}, { syncing: false, wholesale_product:false, retail_product: false });
     if (global.io) {
       global.io.emit('sync-complete', {
         message: '✅ Sync completed successfully',
@@ -20,7 +20,7 @@ const syncCron = cron.schedule("*/10 * * * * *", async () => {
   }
   await runFullSyncFunction();
 });
-cron.schedule("*/2 * * * * *", async () => {
+cron.schedule("* * * * *", async () => {
   let syncData = await syncStatus.findOne({}, '');
   let syncing = syncData?.syncing;
   if (syncing) {
