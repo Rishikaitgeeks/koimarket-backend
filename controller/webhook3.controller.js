@@ -33,7 +33,7 @@ const Webhook3 = async (req, res) => {
       inserted.push(saved);
     }
 
-    await sendThresholdEmails();
+    // await sendThresholdEmails();
 
     return res.status(200).json({ message: "Order synced", inserted });
   } catch (err) {

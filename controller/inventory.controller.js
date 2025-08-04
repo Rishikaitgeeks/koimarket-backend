@@ -58,7 +58,7 @@ const updateBulkInventory = async (req, res) => {
         { upsert: true }
       );
 
-      await sendThresholdEmails();
+      // await sendThresholdEmails();
 
       results.push({ sku, success: true });
 
