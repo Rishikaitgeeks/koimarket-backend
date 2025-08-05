@@ -278,7 +278,6 @@ const fetchStatus = async (request, response) => {
         });
 }
 
-
 module.exports = {
   runFullSync,
   syncWholesale,

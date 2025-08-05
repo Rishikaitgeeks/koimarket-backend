@@ -30,7 +30,7 @@ const handleCSVUpload = (req, res) => {
     })
     .on('error', (err) => {
       console.error('CSV Error:', err);
-      res.status(500).json({ error: 'Failed to process CSV' });
+      res.status(500).json({ error: 'Failed to process CSV.' });
     });
 };
 module.exports = { handleCSVUpload };
