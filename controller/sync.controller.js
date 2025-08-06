@@ -156,7 +156,7 @@ const syncFromWholesaleToSync = async () => {
       product_title: item.product_title,
       product_image: item.product_image,
       variant_title: item.variant_title,
-      variant_price: item.variant_price,
+      retail_price: item.variant_price,
       variant_image: item.variant_image,
     });
   }
@@ -169,7 +169,7 @@ const syncFromWholesaleToSync = async () => {
         product_title: item.product_title,
         product_image: item.product_image,
         variant_title: item.variant_title,
-        variant_price: item.variant_price,
+        wholesale_price: item.variant_price,
         variant_image: item.variant_image,
       });
     }
@@ -209,7 +209,7 @@ await syncStatus.findOneAndUpdate({}, { inprogress: true });
     await syncStatus.findOneAndUpdate({}, { inprogress: false });
     return ({
       success:true,
-      message: "✅ Full sync completed successfully",
+      message: "Full sync completed successfully",
       wholesale: {
         processedCount: wholesaleResult.processed.length,
         skippedCount: wholesaleResult.skipped.length,
@@ -228,12 +228,14 @@ await syncStatus.findOneAndUpdate({}, { inprogress: true });
           product_title: p.product_title,
           variant_title: p.variant_title,
           quantity: p.quantity,
+          retail_price: p.retail_price,         
+          wholesale_price: p.wholesale_price
         })),
         failed: syncResult.failed,
       },
     });
   } catch (err) {
-    console.error("❌ Full sync error:", err.message);
+    console.error("Full sync error:", err.message);
     return {
       success:false
     }
