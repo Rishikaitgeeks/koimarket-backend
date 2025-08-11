@@ -60,7 +60,6 @@ mongoose.connect(process.env.MONGODB_URI)
         server.listen(PORT, () => {
             console.log("Server started on port 3000");
         });
-        server.timeout(300000);
     })
     .catch((err) => {
         console.error("Failed to connect to MongoDB", err);

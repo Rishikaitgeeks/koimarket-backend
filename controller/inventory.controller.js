@@ -7,7 +7,9 @@ const { setRetailShopifyInventory } = require("../utils/updateStore");
 const { sendThresholdEmails } = require("./nodemailer");
 
 const location_id = process.env.SHOPIFY_LOCATION_ID;
-
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 const updateBulkInventory = async (req, res) => {
   const updates = req.body;
 
@@ -65,6 +67,7 @@ const updateBulkInventory = async (req, res) => {
     } catch (err) {
       results.push({ sku, success: false, error: err.message });
     }
+    await delay(500);
   }
 
   return res.status(200).json({ message: "Bulk inventory update completed", results });
