@@ -162,6 +162,7 @@ const syncFromWholesaleToSync = async () => {
   }
 
   for (const item of wholesaleData) {
+    console.log(item,'wholesale-data');
     if (!skuMap.has(item.sku)) {
       skuMap.set(item.sku, {
         sku: item.sku,
@@ -178,6 +179,7 @@ const syncFromWholesaleToSync = async () => {
   const mergedData = Array.from(skuMap.values());
 
   for (const item of mergedData) {
+    console.log(item,'merge-data');
     try {
       const result = await Sync.findOneAndUpdate(
         { sku: item.sku },

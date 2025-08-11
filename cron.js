@@ -26,6 +26,7 @@ cron.schedule("*/2 * * * * *", async () => {
   if (syncing) {
     syncCron.start();
   } else {
+    console.log('test',process.env.SHOPIFY_STORES);
     syncCron.stop();
     await syncStatus.findOneAndUpdate({}, {
       wholesale_product: false,
