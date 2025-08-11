@@ -162,7 +162,6 @@ const syncFromWholesaleToSync = async () => {
   }
 
   for (const item of wholesaleData) {
-    console.log(item,'wholesale-data');
     if (!skuMap.has(item.sku)) {
       skuMap.set(item.sku, {
         sku: item.sku,
@@ -173,6 +172,8 @@ const syncFromWholesaleToSync = async () => {
         wholesale_price: item.variant_price,
         variant_image: item.variant_image,
       });
+    }else{
+      skuMap.set(item.sku,{wholesale_price: item.variant_price});
     }
   }
 
