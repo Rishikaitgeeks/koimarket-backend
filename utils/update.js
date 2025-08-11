@@ -29,6 +29,7 @@ const setShopifyInventory = async (inventory_item_id, quantity) => {
       available: quantity,
     });
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };
