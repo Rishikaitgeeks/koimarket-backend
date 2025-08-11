@@ -35,7 +35,7 @@ const updateBulkInventory = async (req, res) => {
         results.push({ sku, success: false, error: "SKU not found in wholesale or retail" });
         continue;
       }
-
+      await delay(1000);
       if (wholesaleDoc?.inventory_item_id) {
         await setShopifyInventory(wholesaleDoc.inventory_item_id, quantity, Number(location_id));
         await Wholesale.updateOne({ sku }, { quantity, threshold });
@@ -63,11 +63,10 @@ const updateBulkInventory = async (req, res) => {
       // await sendThresholdEmails();
 
       results.push({ sku, success: true });
-
+      
     } catch (err) {
       results.push({ sku, success: false, error: err.message });
     }
-    await delay(500);
   }
 
   return res.status(200).json({ message: "Bulk inventory update completed", results });
