@@ -173,7 +173,9 @@ const syncFromWholesaleToSync = async () => {
         variant_image: item.variant_image,
       });
     }else{
-      skuMap.set(item.sku,{wholesale_price: item.variant_price});
+      const existing = skuMap.get(item.sku); 
+      existing.wholesale_price = item.variant_price; 
+      skuMap.set(item.sku, existing);
     }
   }
 
