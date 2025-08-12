@@ -18,7 +18,6 @@ const handleCSVUpload = (req, res) => {
     })
     .on('end', async () => {
       fs.unlinkSync(filePath);
-console.log(records);
       const fakeReq = { body: records };
       const fakeRes = {
         status: (code) => ({

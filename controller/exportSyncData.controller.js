@@ -10,7 +10,7 @@ const exportSyncData = async (req, res) => {
       return res.status(404).json({ message: "No data found in Sync collection" });
     }
 
-    const fields = ['product_title','sku', 'quantity', 'threshold'];
+    const fields = ['product_title','sku', 'quantity'];
     const parser = new Parser({ fields });
     const csv = parser.parse(data);
 
