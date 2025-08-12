@@ -8,7 +8,7 @@ const handleCSVUpload = (req, res) => {
   fs.createReadStream(filePath)
     .pipe(csv())
     .on('data', (row) => {
-      if ((row.SKU || row.sku)  && (row.Quantity || row.quantity) && (row.Threshold || row.threshold)) {
+      if ((row.SKU || row.sku)  && (row.Quantity || row.quantity) || (row.Threshold || row.threshold)) {
         records.push({
           sku: (row.SKU ||row.sku).trim(),
           quantity: parseInt((row.Quantity||row.quantity).trim(), 10),
