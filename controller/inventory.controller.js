@@ -20,9 +20,9 @@ const updateBulkInventory = async (req, res) => {
   const results = [];
 
   for (const item of updates) {
-    const { sku, quantity, threshold } = item;
+    const { sku, quantity } = item;
 
-    if (!sku || quantity === undefined || threshold === undefined) {
+    if (!sku || quantity === undefined) {
       results.push({ sku, success: false, error: "Missing SKU, quantity, or threshold" });
       continue;
     }
@@ -38,12 +38,12 @@ const updateBulkInventory = async (req, res) => {
       await delay(1000);
       if (wholesaleDoc?.inventory_item_id) {
         await setShopifyInventory(wholesaleDoc.inventory_item_id, quantity, Number(location_id));
-        await Wholesale.updateOne({ sku }, { quantity, threshold });
+        await Wholesale.updateOne({ sku }, { quantity });
       }
 
       if (retailDoc?.inventory_item_id) {
         await setRetailShopifyInventory(retailDoc.inventory_item_id, quantity, Number(location_id));
-        await Retail.updateOne({ sku }, { quantity, threshold });
+        await Retail.updateOne({ sku }, { quantity });
       }
 
       const source = wholesaleDoc || retailDoc;
@@ -53,7 +53,6 @@ const updateBulkInventory = async (req, res) => {
         {
           sku,
           quantity,
-          threshold,
           product_title: source.product_title,
           variant_title: source.variant_title,
         },
