@@ -19,14 +19,15 @@ const Webhook3 = async (req, res) => {
       const quantity = item.quantity;
       const variant_title = item.title;
 
+      console.log("in for loop---------");
       if (!sku || !quantity || !variant_title || !orderId) continue;
+      console.log("in conditon----------");
 
-     
-        await updateBulkInventory(
-        { body: [{ sku: sku, quantity:quantity }] },
+      await updateBulkInventory(
+        { body: [{ sku: sku, quantity: quantity }] },
         {}
       );
-
+console.log("after query");
       const newOrder = new Order({
         sku,
         quantity,
@@ -35,13 +36,13 @@ const Webhook3 = async (req, res) => {
         store_name: storeName,
         channel: channel
       });
-
+console.log("after new order");
       const saved = await newOrder.save();
       console.log(saved)
       inserted.push(saved);
       console.log(inserted.length);
     }
-
+console.log("after save");
     // await sendThresholdEmails();
 
     return res.status(200).json({ message: "Order synced", inserted });

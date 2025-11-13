@@ -12,21 +12,29 @@ const shopify = new Shopify({
 
 const setShopifyInventory = async (inventory_item_id, quantity) => {
   try {
+          console.log("in for SADDDDloop---------");
+
     const cleanedInventoryItemId = inventory_item_id.replace("gid://shopify/InventoryItem/", "");
     const location_id = process.env.SHOPIFY_LOCATION_ID;
-  
+        console.log("in forSADDDDDDDDDDDD loop---------");
+
     if (!cleanedInventoryItemId || !location_id) {
       return;
-    }
+    }      console.log("in ASDDDDDDDDDDDDDDfor loop---------");
+
+
     await shopify.inventoryItem.update(cleanedInventoryItemId, {
       tracked: true,
     });
+          console.log("in fASDDDDDDDDor loop---------");
+
 
   await shopify.inventoryLevel.set({
       location_id,
       inventory_item_id: cleanedInventoryItemId,
       available: quantity,
     });
+      console.log("in forASDDDDDDDDDDDDDDDD loop---------");
 
   } catch (error) {
     console.log(error);
