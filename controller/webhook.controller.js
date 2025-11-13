@@ -7,6 +7,7 @@ const { setRetailShopifyInventory } = require("../utils/updateStore");
 const Webhook = async (req, res) => {
   try {
     const order = req.body;
+    console.log("object");
     const storeName = req.headers["x-shopify-shop-domain"] || null;
     const orderId = order.name;
 console.log(order);
@@ -26,21 +27,22 @@ console.log(order);
 console.log("item",items)
     for (const { sku, quantity } of items) {
       if (!sku || !quantity) continue;
-
+ console.log("foorloop", sku ,quantity )
       const retailProduct = await Retail.findOne({ sku });
+      console.log("retail pro" , retailProduct);
+
       if (!retailProduct) {
         continue;
       }
-
+console.log("retail conditiojj pass");
       const inventoryId = retailProduct.inventory_item_id;
       const currentQty = retailProduct.quantity || 0;
-
+console.log(inventoryId , currentQty);
       if (!inventoryId) {
         continue;
       }
-
       const newQty = isRefund ? currentQty + quantity : currentQty - quantity;
-
+console.log(newQty , "newenewnew");
       await Wholesale.findOneAndUpdate(
         { sku },
         { $inc: { quantity: isRefund ? quantity : -quantity } }
@@ -49,8 +51,9 @@ console.log("item",items)
       await Retail.updateOne({ sku }, { quantity: newQty });
 
       await Sync.updateOne({ sku }, { quantity: newQty });
-
+console.log("fun run");
       await setRetailShopifyInventory(inventoryId, newQty);
+      console.log("fun end");
     }
      console.log("success true")
     await Order.deleteMany({ order_id: orderId, store_name: storeName });

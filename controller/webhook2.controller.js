@@ -7,6 +7,8 @@ const { setShopifyInventory } = require("../utils/update");
 const Webhook2 = async (req, res) => {
   try {
     const order = req.body;
+        console.log("object 2");
+
     const storeName = req.headers["x-shopify-shop-domain"] || null;
     const orderId = order.name;
 console.log(order);
@@ -27,21 +29,25 @@ console.log(order);
 console.log("item",items)
     for (const { sku, quantity } of items) {
       if (!sku || !quantity) continue;
+ console.log("foorloop", sku ,quantity )
 
       const wholesaleProduct = await Wholesale.findOne({ sku });
+            console.log("retail pro" , wholesaleProduct);
+
       if (!wholesaleProduct) {
         continue;
       }
-
+console.log("retail conditiojj pass");
       const inventoryId = wholesaleProduct.inventory_item_id;
       const currentQty = wholesaleProduct.quantity || 0;
+console.log(inventoryId , currentQty);
 
       if (!inventoryId) {
         continue;
       }
 
       const newQty = isRefund ? currentQty + quantity : currentQty - quantity;
-
+console.log(newQty , "newenewnew");
       await Retail.findOneAndUpdate(
         { sku },
         { $inc: { quantity: isRefund ? quantity : -quantity } }
@@ -49,8 +55,11 @@ console.log("item",items)
 
       await Wholesale.updateOne({ sku }, { quantity: newQty });
       await Sync.updateOne({ sku }, { quantity: newQty });
+console.log("fun run");
 
       await setShopifyInventory(inventoryId, newQty);
+      console.log("fun end");
+
     }
      console.log("success true")
 
