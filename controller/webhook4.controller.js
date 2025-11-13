@@ -1,5 +1,7 @@
 const {sendThresholdEmails} = require("./nodemailer");
 const Order = require("../model/order.model");
+const { updateBulkInventory } = require("./inventory.controller");
+
 
 const Webhook4 = async (req, res) => {
   try {
@@ -40,7 +42,8 @@ const Webhook4 = async (req, res) => {
 
     return res.status(200).json({ message: "Order synced", inserted });
   } catch (err) {
-    return res.status(500).json({ error: "Failed to handle webhook" });
+    console.log(err) 
+       return res.status(500).json({ error: "Failed to handle webhook" });
   }
 };
 
