@@ -5,9 +5,9 @@ const { updateBulkInventory } = require("./inventory.controller");
 
 const Webhook4 = async (req, res) => {
   try {
-    const order = req.body.order;
+    const order = req.body;
     console.log(order)
-    // const channel=order['source_name'];
+    const channel=order['source_name'];
     const orderId = order.id;
     const storeName = req.headers["x-shopify-shop-domain"] || null;
     console.log(channel);
@@ -31,7 +31,7 @@ const Webhook4 = async (req, res) => {
         variant_title,
         order_id: order.name,
         store_name: storeName,
-        // channel:channel
+        channel:channel
       });
 
       const saved = await newOrder.save();
