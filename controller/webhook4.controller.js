@@ -24,8 +24,10 @@ const Webhook4 = async (req, res) => {
       if (!sku || !quantity || !variant_title || !orderId) continue;
       console.log("in for loop------ss---");
 
-    const payload = { body: [{ sku, quantity }] };
-  await updateBulkInventory(payload, {});
+      await updateBulkInventory(
+        { body: [{ sku: sku, quantity: quantity }] },
+        {}
+      );
       console.log("in ssssssssssfor loop---------");
 
       const newOrder = new Order({

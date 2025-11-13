@@ -6,9 +6,10 @@ const { setShopifyInventory } = require("../utils/update");
 
 const Webhook2 = async (req, res) => {
   try {
-    const order = req.body.order;
+    const order = req.body;
     const storeName = req.headers["x-shopify-shop-domain"] || null;
     const orderId = order.name;
+console.log(order);
 
     const isRefund = order.refunds && order.refunds.length > 0;
 
@@ -23,7 +24,7 @@ const Webhook2 = async (req, res) => {
           sku: item.sku?.trim(),
           quantity: item.quantity,
         }));
-
+console.log("item",items)
     for (const { sku, quantity } of items) {
       if (!sku || !quantity) continue;
 
@@ -51,6 +52,7 @@ const Webhook2 = async (req, res) => {
 
       await setShopifyInventory(inventoryId, newQty);
     }
+     console.log("success true")
 
     await Order.deleteMany({ order_id: orderId, store_name: storeName });
 
