@@ -19,6 +19,10 @@ const Webhook4 = async (req, res) => {
       const variant_title = item.title;
 
       if (!sku || !quantity || !variant_title || !orderId) continue;
+        await updateBulkInventory(
+              { body: [{ sku: sku, quantity:quantity }] },
+              {}
+            );
         const newOrder = new Order({
         sku,
         quantity,
