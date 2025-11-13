@@ -13,7 +13,7 @@ const CSVRouter = require("./routes/csv.route");
 const ExportRouter = require("./routes/export.route");
 const socketIo = require('socket.io');
 const http = require('http');
-require("./cron");
+// require("./cron");
 
 const dotenv = require("dotenv");
 dotenv.config();

@@ -7,12 +7,12 @@ const { setRetailShopifyInventory } = require("../utils/updateStore");
 const { sendThresholdEmails } = require("./nodemailer");
 
 const location_id = process.env.SHOPIFY_LOCATION_ID;
+console.log(location_id)
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 const updateBulkInventory = async (req, res) => {
   const updates = req.body;
-
   if (!Array.isArray(updates) || updates.length === 0) {
     return res.status(400).json({ error: "Request body must be a non-empty array." });
   }
@@ -30,6 +30,7 @@ const updateBulkInventory = async (req, res) => {
     try {
       const wholesaleDoc = await Wholesale.findOne({ sku });
       const retailDoc = await Retail.findOne({ sku });
+
    
       if (!wholesaleDoc && !retailDoc) {
         results.push({ sku, success: false, error: "SKU not found in wholesale or retail" });
@@ -37,12 +38,14 @@ const updateBulkInventory = async (req, res) => {
       }
       await delay(1000);
       if (wholesaleDoc?.inventory_item_id) {
-        await setShopifyInventory(wholesaleDoc.inventory_item_id, quantity, Number(location_id));
+        console.log("id",wholesaleDoc?.inventory_item_id)
+        await setShopifyInventory(wholesaleDoc.inventory_item_id, quantity);
         await Wholesale.updateOne({ sku }, { quantity });
+        console.log("wholesale update")
       }
 
       if (retailDoc?.inventory_item_id) {
-        await setRetailShopifyInventory(retailDoc.inventory_item_id, quantity, Number(location_id));
+        await setRetailShopifyInventory(retailDoc.inventory_item_id, quantity);
         await Retail.updateOne({ sku }, { quantity });
       }
 
@@ -68,7 +71,7 @@ const updateBulkInventory = async (req, res) => {
     }
   }
 
-  return res.status(200).json({ message: "Bulk inventory update completed", results });
+  // return res.status(200).json({ message: "Bulk inventory update completed", results });
 };
 
 module.exports = { updateBulkInventory };

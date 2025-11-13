@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.post("/order",Webhook);
 router.post("/order2",Webhook2);
-router.post("/order-creation" , Webhook3);
-router.post("/order-creation2" , Webhook4);
+router.post("/order-creation" , Webhook3); //team-gamma
+router.post("/order-creation2" , Webhook4);//headless
 module.exports = router;

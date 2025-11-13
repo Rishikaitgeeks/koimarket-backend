@@ -18,16 +18,16 @@ const setShopifyInventory = async (inventory_item_id, quantity) => {
     if (!cleanedInventoryItemId || !location_id) {
       return;
     }
-
     await shopify.inventoryItem.update(cleanedInventoryItemId, {
       tracked: true,
     });
 
-    await shopify.inventoryLevel.set({
+  await shopify.inventoryLevel.set({
       location_id,
       inventory_item_id: cleanedInventoryItemId,
       available: quantity,
     });
+
   } catch (error) {
     console.log(error);
     throw error;

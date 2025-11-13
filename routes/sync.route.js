@@ -5,5 +5,5 @@ const { runFullSync, fetchProducts,fetchStatus } = require("../controller/sync.c
 
 router.get("/sync",auth, runFullSync);
 router.get("/fetch-status",auth, fetchStatus);
-router.get("/fetch-products",auth, fetchProducts);
+router.get("/fetch-products", fetchProducts);
 module.exports = router;

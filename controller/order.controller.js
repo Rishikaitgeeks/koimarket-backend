@@ -7,7 +7,7 @@ const getOrder = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const data = await Order.find().skip(skip).limit(limit).lean();
+    const data = await Order.find().sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
     const totalCount = await Order.countDocuments();
 
     return res.status(200).json({
