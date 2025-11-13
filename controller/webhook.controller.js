@@ -62,6 +62,7 @@ console.log("fun run");
       .status(200)
       .json({ message: "Order sync complete and order deleted" });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ error: "Webhook processing failed" });
   }
 };

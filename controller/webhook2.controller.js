@@ -32,7 +32,7 @@ console.log("item",items)
  console.log("foorloop", sku ,quantity )
 
       const wholesaleProduct = await Wholesale.findOne({ sku });
-            console.log("retail pro" , wholesaleProduct);
+            console.log("wholesale pro" , wholesaleProduct);
 
       if (!wholesaleProduct) {
         continue;
@@ -69,6 +69,7 @@ console.log("fun run");
       message: `Inventory ${isRefund ? "restocked (refund)" : "synced (sale)"}`,
     });
   } catch (err) {
+    console.log(err)
     return res.status(500).json({ error: "Webhook processing failed" });
   }
 };
