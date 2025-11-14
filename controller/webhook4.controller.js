@@ -44,7 +44,9 @@ const Webhook4 = async (req, res) => {
 
 
       const saved = await newOrder.save();
+      console.log(saved);
       inserted.push(saved);
+      console.log("insert")
     }
     console.log("in for loop----ASasASsS-----");
 
