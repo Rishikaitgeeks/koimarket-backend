@@ -52,7 +52,7 @@ console.log(newQty , "newenewnew");
 
       await Sync.updateOne({ sku }, { quantity: newQty });
 console.log("fun run");
-      await setShopifyInventory(inventoryId, newQty);
+      await setRetailShopifyInventory(inventoryId, newQty);
       console.log("fun end");
     }
      console.log("success true")
