@@ -32,20 +32,28 @@ const Webhook4 = async (req, res) => {
       // );
       console.log("in ssssssssssfor loop---------");
 
-      const newOrder = new Order({
-        sku,
-        quantity,
-        variant_title,
-        order_id: order.name,
-        store_name: storeName,
-        channel: channel
-      });
-      console.log("in ssssssssssssaaaaaaafor loop---------");
+      // const newOrder = new Order({
+      //   sku,
+      //   quantity,
+      //   variant_title,
+      //   order_id: order.name,
+      //   store_name: storeName,
+      //   channel: channel
+      // });
+      // console.log("in ssssssssssssaaaaaaafor loop---------");
 
 
-      const saved = await newOrder.save();
-      console.log(saved);
-      inserted.push(saved);
+      // const saved = await newOrder.save();
+      // console.log(saved);
+      // inserted.push(saved);
+       await Order.insertMany({
+                  sku,
+              quantity,
+              variant_title,
+              order_id: order.name,
+              store_name: storeName,
+              channel: channel
+                });
       console.log("insert")
     }
     console.log("in for loop----ASasASsS-----");

@@ -29,20 +29,28 @@ const Webhook3 = async (req, res) => {
       //   { body: [{ sku: sku, quantity: quantity }] },
       //   {}
       // );
-console.log("after query");
-      const newOrder = new Order({
-        sku,
+     console.log("after query");
+    //   const newOrder = new Order({
+    //     sku,
+    //     quantity,
+    //     variant_title,
+    //     order_id: order.name,
+    //     store_name: storeName,
+    //     channel: channel
+    //   });
+    //  console.log("after new order");
+    //   const saved = await newOrder.save();
+    //   console.log(saved)
+    //   inserted.push(saved);
+    //   console.log(inserted.length);
+     await Order.insertMany({
+            sku,
         quantity,
         variant_title,
         order_id: order.name,
         store_name: storeName,
         channel: channel
-      });
-console.log("after new order");
-      const saved = await newOrder.save();
-      console.log(saved)
-      inserted.push(saved);
-      console.log(inserted.length);
+          });
     }
 console.log("after save");
     // await sendThresholdEmails();

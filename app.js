@@ -28,9 +28,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect(process.env.MONGODB_URI)
 
-    .then(() => {
+    .then(async() => {
         console.log("Connected to MongoDB");
-
         const server = http.createServer(app);
         const io = socketIo(server, {
             cors: {
