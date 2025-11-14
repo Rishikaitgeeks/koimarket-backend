@@ -5,6 +5,8 @@ const { updateBulkInventory } = require("./inventory.controller");
 const Webhook3 = async (req, res) => {
   try {
     const order = req.body;
+            console.log("object 3");
+
     const channel = order['source_name'];
     const orderId = order.name;
     const storeName = req.headers["x-shopify-shop-domain"] || null;

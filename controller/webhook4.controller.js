@@ -6,6 +6,8 @@ const { updateBulkInventory } = require("./inventory.controller");
 const Webhook4 = async (req, res) => {
   try {
     const order = req.body;
+            console.log("object 4");
+
     console.log(order)
     const channel = order['source_name'];
     const orderId = order.id;
