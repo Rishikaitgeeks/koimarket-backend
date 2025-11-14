@@ -25,10 +25,10 @@ const Webhook3 = async (req, res) => {
       if (!sku || !quantity || !variant_title || !orderId) continue;
       console.log("in conditon----------");
 
-      await updateBulkInventory(
-        { body: [{ sku: sku, quantity: quantity }] },
-        {}
-      );
+      // await updateBulkInventory(
+      //   { body: [{ sku: sku, quantity: quantity }] },
+      //   {}
+      // );
 console.log("after query");
       const newOrder = new Order({
         sku,
