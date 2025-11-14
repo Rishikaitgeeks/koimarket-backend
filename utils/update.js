@@ -15,7 +15,7 @@ const setShopifyInventory = async (inventory_item_id, quantity) => {
           console.log("in for SADDDDloop---------");
 
     const cleanedInventoryItemId = inventory_item_id.replace("gid://shopify/InventoryItem/", "");
-    const location_id = 111087124851;
+    const location_id = process.env.SHOPIFY_LOCATION_ID;
         console.log("set",cleanedInventoryItemId,location_id)
     if (!cleanedInventoryItemId || !location_id) {
       return;
