@@ -6,7 +6,7 @@ const { setRetailShopifyInventory } = require("../utils/updateStore");
 
 const Webhook = async (req, res) => {
   try {
-    const order = req.body.order;
+    const order = req.body;
     console.log("object");
     const storeName = req.headers["x-shopify-shop-domain"] || null;
     const orderId = order.name;
