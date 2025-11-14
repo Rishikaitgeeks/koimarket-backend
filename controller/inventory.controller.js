@@ -47,6 +47,7 @@ const updateBulkInventory = async (req, res) => {
       if (retailDoc?.inventory_item_id) {
         await setRetailShopifyInventory(retailDoc.inventory_item_id, quantity);
         await Retail.updateOne({ sku }, { quantity });
+        console.log("retail update")
       }
 
       const source = wholesaleDoc || retailDoc;
