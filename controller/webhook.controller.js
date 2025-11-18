@@ -10,39 +10,39 @@ const Webhook = async (req, res) => {
     console.log("object");
     const storeName = req.headers["x-shopify-shop-domain"] || null;
     const orderId = order.name;
-console.log(order);
+    console.log(order);
     const isRefund = order.refunds && order.refunds.length > 0;
 
     const items = isRefund
       ? order.refunds.flatMap((refund) =>
-          refund.refund_line_items.map((refundItem) => ({
-            sku: refundItem.line_item?.sku?.trim(),
-            quantity: refundItem.quantity,
-          }))
-        )
+        refund.refund_line_items.map((refundItem) => ({
+          sku: refundItem.line_item?.sku?.trim(),
+          quantity: refundItem.quantity,
+        }))
+      )
       : order.line_items.map((item) => ({
-          sku: item.sku?.trim(),
-          quantity: item.quantity,
-        }));
-console.log("item",items)
+        sku: item.sku?.trim(),
+        quantity: item.quantity,
+      }));
+    console.log("item", items)
     for (const { sku, quantity } of items) {
       if (!sku || !quantity) continue;
- console.log("foorloop", sku ,quantity )
+      console.log("foorloop", sku, quantity)
       const retailProduct = await Retail.findOne({ sku });
-      console.log("retail pro" , retailProduct);
+      console.log("retail pro", retailProduct);
 
       if (!retailProduct) {
         continue;
       }
-console.log("retail conditiojj pass");
+      console.log("retail conditiojj pass");
       const inventoryId = retailProduct.inventory_item_id;
       const currentQty = retailProduct.quantity || 0;
-console.log(inventoryId , currentQty);
+      console.log(inventoryId, currentQty);
       if (!inventoryId) {
         continue;
       }
       const newQty = isRefund ? currentQty + quantity : currentQty - quantity;
-console.log(newQty , "newenewnew");
+      console.log(newQty, "newenewnew");
       await Wholesale.findOneAndUpdate(
         { sku },
         { $inc: { quantity: isRefund ? quantity : -quantity } }
@@ -51,13 +51,13 @@ console.log(newQty , "newenewnew");
       await Retail.updateOne({ sku }, { quantity: newQty });
 
       await Sync.updateOne({ sku }, { quantity: newQty });
-console.log("fun run");
+      console.log("fun run");
       await setRetailShopifyInventory(inventoryId, newQty);
       console.log("fun end");
     }
-     console.log("success true")
+    console.log("success true")
     await Order.deleteMany({ order_id: orderId, store_name: storeName });
-   
+
     return res
       .status(200)
       .json({ message: "Order sync complete and order deleted" });
