@@ -40,4 +40,30 @@ console.log("inventoryItem start",shopify.inventoryItem);
     throw error;
   }
 };
-module.exports = { setShopifyInventory, shopify };
+
+const deleteWholesaleShopifyProduct = async (product_id) => {
+  try {
+    if (!product_id) {
+      throw new Error("Product ID is required");
+    }
+    const cleanedId = String(product_id).replace("gid://shopify/Product/", "");
+    console.log("Deleting product from Shopify:", cleanedId);
+    const result = await shopify.product.delete(cleanedId);
+    console.log("Product deleted successfully:", cleanedId);
+    return {
+      success: true,
+      message: "Product deleted from Shopify wholsale store",
+      product_id: cleanedId,
+      result,
+    };
+  } catch (error) {
+    console.error("Error deleting Shopify product:", error);
+    return {
+      success: false,
+      message: "Failed to delete product",
+      error: error?.message,
+    };
+  }
+};
+
+module.exports = { setShopifyInventory, shopify, deleteWholesaleShopifyProduct };

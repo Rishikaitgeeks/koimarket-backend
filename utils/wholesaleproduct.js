@@ -2,12 +2,14 @@ const { graphqlRequest } = require("./Shopify");
 const syncStatus = require('../model/syncstatus.model')
 const fetchShopifyVariants = async () => {
   const variants = [];
-  let {wholesale_cursor,wholesale_product} = await syncStatus.findOne({},'');
+  let { wholesale_cursor, wholesale_product } = await syncStatus.findOne({}, '');
   let endCursor = wholesale_cursor;
-  if(wholesale_product) {
-    return {variants:{
-      all:true
-    }}
+  if (wholesale_product) {
+    return {
+      variants: {
+        all: true
+      }
+    }
   }
   console.log('wholesale');
   try {
@@ -46,6 +48,14 @@ const fetchShopifyVariants = async () => {
                   originalSrc
                   altText
                 }
+                metafields(first: 10) {
+                  edges {
+                    node {
+                      value
+                      key
+                    }
+                  }
+                }
               }
             }
           }
@@ -55,48 +65,53 @@ const fetchShopifyVariants = async () => {
   }
 `;
 
-      console.log(" Sending GraphQL query to Shopify...");
- const result = await graphqlRequest({ query });
+    console.log(" Sending GraphQL query to Shopify...");
+    const result = await graphqlRequest({ query });
 
-      console.log(" Received Shopify response.");
+    console.log(" Received Shopify response.");
 
-      if (!result?.data?.products?.edges) {
-        console.error(" No products found in result:", JSON.stringify(result, null, 2));
+    if (!result?.data?.products?.edges) {
+      console.error(" No products found in result:", JSON.stringify(result, null, 2));
+    }
+
+    const productEdges = result.data.products.edges;
+
+    console.log(productEdges[0], "wholesale_product");
+    for (const productEdge of productEdges) {
+      const product = productEdge.node;
+      for (const variantEdge of product.variants.edges) {
+        const variant = variantEdge.node;
+        const metafields = variant.metafields?.edges || [];
+        const location1 = metafields.find(m => m.node.key === "location1")?.node?.value || null;
+        const location2 = metafields.find(m => m.node.key === "location2")?.node?.value || null;
+
+        const qty = variant.inventoryQuantity || 0;
+
+        variants.push({
+          sku: variant.sku,
+          inventory_item_id: variant.inventoryItem?.id,
+          quantity: qty,
+          product_id: product.id,
+          product_title: product.title,
+          product_image: product.images?.edges?.[0]?.node?.url,
+          variant_title: variant.title,
+          variant_price: variant.price,
+          variant_image: variant.image?.originalSrc,
+          location_1: location1,
+          location_2: location2,
+        });
       }
-
-      const productEdges = result.data.products.edges;
-
-console.log(productEdges[0],"wholesale_product");
-      for (const productEdge of productEdges) {
-        const product = productEdge.node;
-        for (const variantEdge of product.variants.edges) {
-          const variant = variantEdge.node;
-        
-          const qty = variant.inventoryQuantity || 0;
-
-          variants.push({
-            sku: variant.sku,
-            inventory_item_id: variant.inventoryItem?.id,
-            quantity: qty,
-            product_id: product.id,
-            product_title: product.title,
-            product_image: product.images?.edges?.[0]?.node?.url,
-            variant_title: variant.title,
-            variant_price: variant.price,
-            variant_image: variant.image?.originalSrc,
-          });
-        }
-      }
-      let product_done=false;
-      let hasNextPage = result.data.products.pageInfo.hasNextPage;
-      endCursor = result.data.products.pageInfo.endCursor;
-      if(!hasNextPage) product_done=true;
-   await syncStatus.findOneAndUpdate({},{ $set: { wholesale_cursor: endCursor,wholesale_product:product_done } },{ new: true });
+    }
+    let product_done = false;
+    let hasNextPage = result.data.products.pageInfo.hasNextPage;
+    endCursor = result.data.products.pageInfo.endCursor;
+    if (!hasNextPage) product_done = true;
+    await syncStatus.findOneAndUpdate({}, { $set: { wholesale_cursor: endCursor, wholesale_product: product_done } }, { new: true });
 
 
     console.log(` Total variants fetched: ${variants.length}`);
     variants.all = false;
-    return {variants};
+    return { variants };
   } catch (err) {
     console.error(" Shopify GraphQL fetch failed:", err?.message || err);
     return [];

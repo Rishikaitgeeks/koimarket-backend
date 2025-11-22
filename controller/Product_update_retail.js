@@ -4,16 +4,10 @@ const Retail = require("../model/retail.model");
 const Sync = require("../model/sync.model");
 const { deleteWholesaleShopifyProduct } = require("../utils/update");
 
-const Product_delete_retail = async (req, res) => {
+const Product_update_retail = async (req, res) => {
   try {
     const order = req.body;
-    const productId = `gid://shopify/Product/${order.id}`;
-    const retailDoc = await Retail.findOne({ product_id: productId }).lean();
-    const sku = retailDoc.sku;
-    const wholesaleDoc = await Wholesale.findOne({ sku }).lean();
-    const wholesale_product_id = wholesaleDoc.product_id;
-    await deleteWholesaleShopifyProduct(wholesale_product_id);
-    console.log("product delete in wholesale")
+    console.log("retail",order);
 
     return res
       .status(200)
@@ -24,4 +18,4 @@ const Product_delete_retail = async (req, res) => {
   }
 };
 
-module.exports = { Product_delete_retail };
+module.exports = { Product_update_retail };

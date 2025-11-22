@@ -8,9 +8,11 @@ const retailSchema = new mongoose.Schema(
     product_id: { type: String, required: true },
     product_title: { type: String, required: true },
     product_image: { type: String, default: null },
-    variant_title: {type: String,required: true},
-    variant_price: {type: String,required: true},
-    variant_image: {type: String,default: null},
+    variant_title: { type: String, required: true },
+    variant_price: { type: String, required: true },
+    variant_image: { type: String, default: null },
+    location_1: { type: String, default: null  },
+    location_2: { type: String, default: null  }
   },
   { timestamps: true }
 );
