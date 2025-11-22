@@ -8,6 +8,9 @@ const Product_update_wholesale = async (req, res) => {
   try {
     const order = req.body;
    console.log("wholesale",order);
+   const variantGIDs = order.variants.map(v => v.admin_graphql_api_id);
+console.log(variantGIDs);
+
     return res
       .status(200)
       .json({ message: "Order sync complete and order deleted" });
